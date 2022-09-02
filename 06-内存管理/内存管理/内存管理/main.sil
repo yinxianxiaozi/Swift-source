@@ -1,0 +1,373 @@
+sil_stage canonical
+
+import Builtin
+import Swift
+import SwiftShims
+
+import Foundation
+
+class WYTeacher {
+  @_hasStorage @_hasInitialValue var age: Int { get set }
+  @_hasStorage @_hasInitialValue var name: String { get set }
+  @objc deinit
+  init()
+}
+
+@_hasStorage @_hasInitialValue var t: WYTeacher { get set }
+
+@_hasStorage @_hasInitialValue var t1: WYTeacher { get set }
+
+@_hasStorage @_hasInitialValue var t2: WYTeacher { get set }
+
+// t
+sil_global hidden @$s4main1tAA9WYTeacherCvp : $WYTeacher
+
+// t1
+sil_global hidden @$s4main2t1AA9WYTeacherCvp : $WYTeacher
+
+// t2
+sil_global hidden @$s4main2t2AA9WYTeacherCvp : $WYTeacher
+
+// main
+sil @main : $@convention(c) (Int32, UnsafeMutablePointer<Optional<UnsafeMutablePointer<Int8>>>) -> Int32 {
+bb0(%0 : $Int32, %1 : $UnsafeMutablePointer<Optional<UnsafeMutablePointer<Int8>>>):
+  alloc_global @$s4main1tAA9WYTeacherCvp          // id: %2
+  //创建变量
+  %3 = global_addr @$s4main1tAA9WYTeacherCvp : $*WYTeacher // users: %7, %15, %10
+  %4 = metatype $@thick WYTeacher.Type            // user: %6
+  // function_ref WYTeacher.__allocating_init()
+  %5 = function_ref @$s4main9WYTeacherCACycfC : $@convention(method) (@thick WYTeacher.Type) -> @owned WYTeacher // user: %6
+  //创建对象
+  %6 = apply %5(%4) : $@convention(method) (@thick WYTeacher.Type) -> @owned WYTeacher // user: %7
+  //赋值给t
+  store %6 to %3 : $*WYTeacher                    // id: %7
+  alloc_global @$s4main2t1AA9WYTeacherCvp         // id: %8
+  //创建全局变量t1
+  %9 = global_addr @$s4main2t1AA9WYTeacherCvp : $*WYTeacher // user: %11
+  //读取%3，也就是t
+  %10 = begin_access [read] [dynamic] %3 : $*WYTeacher // users: %12, %11
+  //将t的地址赋值给t1
+  copy_addr %10 to [initialization] %9 : $*WYTeacher // id: %11
+  end_access %10 : $*WYTeacher                    // id: %12
+  //创建全局变量t2
+  alloc_global @$s4main2t2AA9WYTeacherCvp         // id: %13
+  %14 = global_addr @$s4main2t2AA9WYTeacherCvp : $*WYTeacher // user: %16
+  %15 = begin_access [read] [dynamic] %3 : $*WYTeacher // users: %17, %16
+  //将t的地址赋值给t3
+  copy_addr %15 to [initialization] %14 : $*WYTeacher // id: %16
+  end_access %15 : $*WYTeacher                    // id: %17
+  %18 = integer_literal $Builtin.Word, 1          // user: %20
+  // function_ref _allocateUninitializedArray<A>(_:)
+  %19 = function_ref @$ss27_allocateUninitializedArrayySayxG_BptBwlF : $@convention(thin) <τ_0_0> (Builtin.Word) -> (@owned Array<τ_0_0>, Builtin.RawPointer) // user: %20
+  %20 = apply %19<Any>(%18) : $@convention(thin) <τ_0_0> (Builtin.Word) -> (@owned Array<τ_0_0>, Builtin.RawPointer) // users: %22, %21
+  %21 = tuple_extract %20 : $(Array<Any>, Builtin.RawPointer), 0 // user: %33
+  %22 = tuple_extract %20 : $(Array<Any>, Builtin.RawPointer), 1 // user: %23
+  %23 = pointer_to_address %22 : $Builtin.RawPointer to [strict] $*Any // user: %30
+  %24 = string_literal utf8 "Hello, World!"       // user: %29
+  %25 = integer_literal $Builtin.Word, 13         // user: %29
+  %26 = integer_literal $Builtin.Int1, -1         // user: %29
+  %27 = metatype $@thin String.Type               // user: %29
+  // function_ref String.init(_builtinStringLiteral:utf8CodeUnitCount:isASCII:)
+  %28 = function_ref @$sSS21_builtinStringLiteral17utf8CodeUnitCount7isASCIISSBp_BwBi1_tcfC : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %29
+  %29 = apply %28(%24, %25, %26, %27) : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %31
+  %30 = init_existential_addr %23 : $*Any, $String // user: %31
+  store %29 to %30 : $*String                     // id: %31
+  // function_ref _finalizeUninitializedArray<A>(_:)
+  %32 = function_ref @$ss27_finalizeUninitializedArrayySayxGABnlF : $@convention(thin) <τ_0_0> (@owned Array<τ_0_0>) -> @owned Array<τ_0_0> // user: %33
+  %33 = apply %32<Any>(%21) : $@convention(thin) <τ_0_0> (@owned Array<τ_0_0>) -> @owned Array<τ_0_0> // users: %42, %39
+  // function_ref default argument 1 of print(_:separator:terminator:)
+  %34 = function_ref @$ss5print_9separator10terminatoryypd_S2StFfA0_ : $@convention(thin) () -> @owned String // user: %35
+  %35 = apply %34() : $@convention(thin) () -> @owned String // users: %41, %39
+  // function_ref default argument 2 of print(_:separator:terminator:)
+  %36 = function_ref @$ss5print_9separator10terminatoryypd_S2StFfA1_ : $@convention(thin) () -> @owned String // user: %37
+  %37 = apply %36() : $@convention(thin) () -> @owned String // users: %40, %39
+  // function_ref print(_:separator:terminator:)
+  %38 = function_ref @$ss5print_9separator10terminatoryypd_S2StF : $@convention(thin) (@guaranteed Array<Any>, @guaranteed String, @guaranteed String) -> () // user: %39
+  %39 = apply %38(%33, %35, %37) : $@convention(thin) (@guaranteed Array<Any>, @guaranteed String, @guaranteed String) -> ()
+  release_value %37 : $String                     // id: %40
+  release_value %35 : $String                     // id: %41
+  release_value %33 : $Array<Any>                 // id: %42
+  %43 = integer_literal $Builtin.Int32, 0         // user: %44
+  %44 = struct $Int32 (%43 : $Builtin.Int32)      // user: %45
+  return %44 : $Int32                             // id: %45
+} // end sil function 'main'
+
+// variable initialization expression of WYTeacher.age
+sil hidden [transparent] @$s4main9WYTeacherC3ageSivpfi : $@convention(thin) () -> Int {
+bb0:
+  %0 = integer_literal $Builtin.Int64, 18         // user: %1
+  %1 = struct $Int (%0 : $Builtin.Int64)          // user: %2
+  return %1 : $Int                                // id: %2
+} // end sil function '$s4main9WYTeacherC3ageSivpfi'
+
+// Int.init(_builtinIntegerLiteral:)
+sil public_external [transparent] @$sSi22_builtinIntegerLiteralSiBI_tcfC : $@convention(method) (Builtin.IntLiteral, @thin Int.Type) -> Int {
+// %0                                             // user: %2
+bb0(%0 : $Builtin.IntLiteral, %1 : $@thin Int.Type):
+  %2 = builtin "s_to_s_checked_trunc_IntLiteral_Int64"(%0 : $Builtin.IntLiteral) : $(Builtin.Int64, Builtin.Int1) // user: %3
+  %3 = tuple_extract %2 : $(Builtin.Int64, Builtin.Int1), 0 // user: %4
+  %4 = struct $Int (%3 : $Builtin.Int64)          // user: %5
+  return %4 : $Int                                // id: %5
+} // end sil function '$sSi22_builtinIntegerLiteralSiBI_tcfC'
+
+// WYTeacher.age.getter
+sil hidden [transparent] @$s4main9WYTeacherC3ageSivg : $@convention(method) (@guaranteed WYTeacher) -> Int {
+// %0 "self"                                      // users: %2, %1
+bb0(%0 : $WYTeacher):
+  debug_value %0 : $WYTeacher, let, name "self", argno 1, implicit // id: %1
+  %2 = ref_element_addr %0 : $WYTeacher, #WYTeacher.age // user: %3
+  %3 = begin_access [read] [dynamic] %2 : $*Int   // users: %4, %5
+  %4 = load %3 : $*Int                            // user: %6
+  end_access %3 : $*Int                           // id: %5
+  return %4 : $Int                                // id: %6
+} // end sil function '$s4main9WYTeacherC3ageSivg'
+
+// WYTeacher.age.setter
+sil hidden [transparent] @$s4main9WYTeacherC3ageSivs : $@convention(method) (Int, @guaranteed WYTeacher) -> () {
+// %0 "value"                                     // users: %6, %2
+// %1 "self"                                      // users: %4, %3
+bb0(%0 : $Int, %1 : $WYTeacher):
+  debug_value %0 : $Int, let, name "value", argno 1, implicit // id: %2
+  debug_value %1 : $WYTeacher, let, name "self", argno 2, implicit // id: %3
+  %4 = ref_element_addr %1 : $WYTeacher, #WYTeacher.age // user: %5
+  %5 = begin_access [modify] [dynamic] %4 : $*Int // users: %6, %7
+  store %0 to %5 : $*Int                          // id: %6
+  end_access %5 : $*Int                           // id: %7
+  %8 = tuple ()                                   // user: %9
+  return %8 : $()                                 // id: %9
+} // end sil function '$s4main9WYTeacherC3ageSivs'
+
+// WYTeacher.age.modify
+sil hidden [transparent] @$s4main9WYTeacherC3ageSivM : $@yield_once @convention(method) (@guaranteed WYTeacher) -> @yields @inout Int {
+// %0 "self"                                      // users: %2, %1
+bb0(%0 : $WYTeacher):
+  debug_value %0 : $WYTeacher, let, name "self", argno 1, implicit // id: %1
+  %2 = ref_element_addr %0 : $WYTeacher, #WYTeacher.age // user: %3
+  %3 = begin_access [modify] [dynamic] %2 : $*Int // users: %5, %8, %4
+  yield %3 : $*Int, resume bb1, unwind bb2        // id: %4
+
+bb1:                                              // Preds: bb0
+  end_access %3 : $*Int                           // id: %5
+  %6 = tuple ()                                   // user: %7
+  return %6 : $()                                 // id: %7
+
+bb2:                                              // Preds: bb0
+  end_access %3 : $*Int                           // id: %8
+  unwind                                          // id: %9
+} // end sil function '$s4main9WYTeacherC3ageSivM'
+
+// variable initialization expression of WYTeacher.name
+sil hidden [transparent] @$s4main9WYTeacherC4nameSSvpfi : $@convention(thin) () -> @owned String {
+bb0:
+  %0 = string_literal utf8 " WY"                  // user: %5
+  %1 = integer_literal $Builtin.Word, 3           // user: %5
+  %2 = integer_literal $Builtin.Int1, -1          // user: %5
+  %3 = metatype $@thin String.Type                // user: %5
+  // function_ref String.init(_builtinStringLiteral:utf8CodeUnitCount:isASCII:)
+  %4 = function_ref @$sSS21_builtinStringLiteral17utf8CodeUnitCount7isASCIISSBp_BwBi1_tcfC : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %5
+  %5 = apply %4(%0, %1, %2, %3) : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %6
+  return %5 : $String                             // id: %6
+} // end sil function '$s4main9WYTeacherC4nameSSvpfi'
+
+// String.init(_builtinStringLiteral:utf8CodeUnitCount:isASCII:)
+sil [always_inline] [readonly] [_semantics "string.makeUTF8"] @$sSS21_builtinStringLiteral17utf8CodeUnitCount7isASCIISSBp_BwBi1_tcfC : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String
+
+// WYTeacher.name.getter
+sil hidden [transparent] @$s4main9WYTeacherC4nameSSvg : $@convention(method) (@guaranteed WYTeacher) -> @owned String {
+// %0 "self"                                      // users: %2, %1
+bb0(%0 : $WYTeacher):
+  debug_value %0 : $WYTeacher, let, name "self", argno 1, implicit // id: %1
+  %2 = ref_element_addr %0 : $WYTeacher, #WYTeacher.name // user: %3
+  %3 = begin_access [read] [dynamic] %2 : $*String // users: %4, %6
+  %4 = load %3 : $*String                         // users: %7, %5
+  retain_value %4 : $String                       // id: %5
+  end_access %3 : $*String                        // id: %6
+  return %4 : $String                             // id: %7
+} // end sil function '$s4main9WYTeacherC4nameSSvg'
+
+// WYTeacher.name.setter
+sil hidden [transparent] @$s4main9WYTeacherC4nameSSvs : $@convention(method) (@owned String, @guaranteed WYTeacher) -> () {
+// %0 "value"                                     // users: %11, %8, %4, %2
+// %1 "self"                                      // users: %5, %3
+bb0(%0 : $String, %1 : $WYTeacher):
+  debug_value %0 : $String, let, name "value", argno 1, implicit // id: %2
+  debug_value %1 : $WYTeacher, let, name "self", argno 2, implicit // id: %3
+  retain_value %0 : $String                       // id: %4
+  %5 = ref_element_addr %1 : $WYTeacher, #WYTeacher.name // user: %6
+  %6 = begin_access [modify] [dynamic] %5 : $*String // users: %8, %7, %10
+  %7 = load %6 : $*String                         // user: %9
+  store %0 to %6 : $*String                       // id: %8
+  release_value %7 : $String                      // id: %9
+  end_access %6 : $*String                        // id: %10
+  release_value %0 : $String                      // id: %11
+  %12 = tuple ()                                  // user: %13
+  return %12 : $()                                // id: %13
+} // end sil function '$s4main9WYTeacherC4nameSSvs'
+
+// WYTeacher.name.modify
+sil hidden [transparent] @$s4main9WYTeacherC4nameSSvM : $@yield_once @convention(method) (@guaranteed WYTeacher) -> @yields @inout String {
+// %0 "self"                                      // users: %2, %1
+bb0(%0 : $WYTeacher):
+  debug_value %0 : $WYTeacher, let, name "self", argno 1, implicit // id: %1
+  %2 = ref_element_addr %0 : $WYTeacher, #WYTeacher.name // user: %3
+  %3 = begin_access [modify] [dynamic] %2 : $*String // users: %5, %8, %4
+  yield %3 : $*String, resume bb1, unwind bb2     // id: %4
+
+bb1:                                              // Preds: bb0
+  end_access %3 : $*String                        // id: %5
+  %6 = tuple ()                                   // user: %7
+  return %6 : $()                                 // id: %7
+
+bb2:                                              // Preds: bb0
+  end_access %3 : $*String                        // id: %8
+  unwind                                          // id: %9
+} // end sil function '$s4main9WYTeacherC4nameSSvM'
+
+// WYTeacher.deinit
+sil hidden @$s4main9WYTeacherCfd : $@convention(method) (@guaranteed WYTeacher) -> @owned Builtin.NativeObject {
+// %0 "self"                                      // users: %6, %2, %1
+bb0(%0 : $WYTeacher):
+  debug_value %0 : $WYTeacher, let, name "self", argno 1, implicit // id: %1
+  %2 = ref_element_addr %0 : $WYTeacher, #WYTeacher.name // user: %3
+  %3 = begin_access [deinit] [static] %2 : $*String // users: %5, %4
+  destroy_addr %3 : $*String                      // id: %4
+  end_access %3 : $*String                        // id: %5
+  %6 = unchecked_ref_cast %0 : $WYTeacher to $Builtin.NativeObject // user: %7
+  return %6 : $Builtin.NativeObject               // id: %7
+} // end sil function '$s4main9WYTeacherCfd'
+
+// WYTeacher.__deallocating_deinit
+sil hidden @$s4main9WYTeacherCfD : $@convention(method) (@owned WYTeacher) -> () {
+// %0 "self"                                      // users: %3, %1
+bb0(%0 : $WYTeacher):
+  debug_value %0 : $WYTeacher, let, name "self", argno 1, implicit // id: %1
+  // function_ref WYTeacher.deinit
+  %2 = function_ref @$s4main9WYTeacherCfd : $@convention(method) (@guaranteed WYTeacher) -> @owned Builtin.NativeObject // user: %3
+  %3 = apply %2(%0) : $@convention(method) (@guaranteed WYTeacher) -> @owned Builtin.NativeObject // user: %4
+  %4 = unchecked_ref_cast %3 : $Builtin.NativeObject to $WYTeacher // user: %5
+  dealloc_ref %4 : $WYTeacher                     // id: %5
+  %6 = tuple ()                                   // user: %7
+  return %6 : $()                                 // id: %7
+} // end sil function '$s4main9WYTeacherCfD'
+
+// WYTeacher.__allocating_init()
+sil hidden [exact_self_class] @$s4main9WYTeacherCACycfC : $@convention(method) (@thick WYTeacher.Type) -> @owned WYTeacher {
+// %0 "$metatype"
+bb0(%0 : $@thick WYTeacher.Type):
+  %1 = alloc_ref $WYTeacher                       // user: %3
+  // function_ref WYTeacher.init()
+  %2 = function_ref @$s4main9WYTeacherCACycfc : $@convention(method) (@owned WYTeacher) -> @owned WYTeacher // user: %3
+  %3 = apply %2(%1) : $@convention(method) (@owned WYTeacher) -> @owned WYTeacher // user: %4
+  return %3 : $WYTeacher                          // id: %4
+} // end sil function '$s4main9WYTeacherCACycfC'
+
+// WYTeacher.init()
+sil hidden @$s4main9WYTeacherCACycfc : $@convention(method) (@owned WYTeacher) -> @owned WYTeacher {
+// %0 "self"                                      // users: %6, %2, %14, %1
+bb0(%0 : $WYTeacher):
+  debug_value %0 : $WYTeacher, let, name "self", argno 1, implicit // id: %1
+  %2 = ref_element_addr %0 : $WYTeacher, #WYTeacher.age // user: %5
+  %3 = integer_literal $Builtin.Int64, 18         // user: %4
+  %4 = struct $Int (%3 : $Builtin.Int64)          // user: %5
+  store %4 to %2 : $*Int                          // id: %5
+  %6 = ref_element_addr %0 : $WYTeacher, #WYTeacher.name // user: %13
+  %7 = string_literal utf8 " WY"                  // user: %12
+  %8 = integer_literal $Builtin.Word, 3           // user: %12
+  %9 = integer_literal $Builtin.Int1, -1          // user: %12
+  %10 = metatype $@thin String.Type               // user: %12
+  // function_ref String.init(_builtinStringLiteral:utf8CodeUnitCount:isASCII:)
+  %11 = function_ref @$sSS21_builtinStringLiteral17utf8CodeUnitCount7isASCIISSBp_BwBi1_tcfC : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %12
+  %12 = apply %11(%7, %8, %9, %10) : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %13
+  store %12 to %6 : $*String                      // id: %13
+  return %0 : $WYTeacher                          // id: %14
+} // end sil function '$s4main9WYTeacherCACycfc'
+
+// _allocateUninitializedArray<A>(_:)
+sil [always_inline] [_semantics "array.uninitialized_intrinsic"] @$ss27_allocateUninitializedArrayySayxG_BptBwlF : $@convention(thin) <τ_0_0> (Builtin.Word) -> (@owned Array<τ_0_0>, Builtin.RawPointer)
+
+// _finalizeUninitializedArray<A>(_:)
+sil shared_external [readnone] [_semantics "array.finalize_intrinsic"] @$ss27_finalizeUninitializedArrayySayxGABnlF : $@convention(thin) <Element> (@owned Array<Element>) -> @owned Array<Element> {
+// %0                                             // user: %2
+bb0(%0 : $Array<Element>):
+  %1 = alloc_stack $Array<Element>                // users: %15, %6, %5, %4, %2
+  store %0 to %1 : $*Array<Element>               // id: %2
+  // function_ref Array._endMutation()
+  %3 = function_ref @$sSa12_endMutationyyF : $@convention(method) <τ_0_0> (@inout Array<τ_0_0>) -> () // user: %4
+  %4 = apply %3<Element>(%1) : $@convention(method) <τ_0_0> (@inout Array<τ_0_0>) -> ()
+  %5 = load %1 : $*Array<Element>                 // users: %16, %10
+  %6 = struct_element_addr %1 : $*Array<Element>, #Array._buffer // user: %7
+  %7 = struct_element_addr %6 : $*_ArrayBuffer<Element>, #_ArrayBuffer._storage // user: %8
+  %8 = struct_element_addr %7 : $*_BridgeStorage<__ContiguousArrayStorageBase>, #_BridgeStorage.rawValue // user: %9
+  %9 = load %8 : $*Builtin.BridgeObject           // user: %14
+  %10 = struct_extract %5 : $Array<Element>, #Array._buffer // user: %11
+  %11 = struct_extract %10 : $_ArrayBuffer<Element>, #_ArrayBuffer._storage // user: %12
+  %12 = struct_extract %11 : $_BridgeStorage<__ContiguousArrayStorageBase>, #_BridgeStorage.rawValue // user: %13
+  strong_retain %12 : $Builtin.BridgeObject       // id: %13
+  strong_release %9 : $Builtin.BridgeObject       // id: %14
+  dealloc_stack %1 : $*Array<Element>             // id: %15
+  return %5 : $Array<Element>                     // id: %16
+} // end sil function '$ss27_finalizeUninitializedArrayySayxGABnlF'
+
+// default argument 1 of print(_:separator:terminator:)
+sil shared_external @$ss5print_9separator10terminatoryypd_S2StFfA0_ : $@convention(thin) () -> @owned String {
+bb0:
+  %0 = string_literal utf8 " "                    // user: %5
+  %1 = integer_literal $Builtin.Word, 1           // user: %5
+  %2 = integer_literal $Builtin.Int1, -1          // user: %5
+  %3 = metatype $@thin String.Type                // user: %5
+  // function_ref String.init(_builtinStringLiteral:utf8CodeUnitCount:isASCII:)
+  %4 = function_ref @$sSS21_builtinStringLiteral17utf8CodeUnitCount7isASCIISSBp_BwBi1_tcfC : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %5
+  %5 = apply %4(%0, %1, %2, %3) : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %6
+  return %5 : $String                             // id: %6
+} // end sil function '$ss5print_9separator10terminatoryypd_S2StFfA0_'
+
+// default argument 2 of print(_:separator:terminator:)
+sil shared_external @$ss5print_9separator10terminatoryypd_S2StFfA1_ : $@convention(thin) () -> @owned String {
+bb0:
+  %0 = string_literal utf8 "\n"                   // user: %5
+  %1 = integer_literal $Builtin.Word, 1           // user: %5
+  %2 = integer_literal $Builtin.Int1, -1          // user: %5
+  %3 = metatype $@thin String.Type                // user: %5
+  // function_ref String.init(_builtinStringLiteral:utf8CodeUnitCount:isASCII:)
+  %4 = function_ref @$sSS21_builtinStringLiteral17utf8CodeUnitCount7isASCIISSBp_BwBi1_tcfC : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %5
+  %5 = apply %4(%0, %1, %2, %3) : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %6
+  return %5 : $String                             // id: %6
+} // end sil function '$ss5print_9separator10terminatoryypd_S2StFfA1_'
+
+// print(_:separator:terminator:)
+sil @$ss5print_9separator10terminatoryypd_S2StF : $@convention(thin) (@guaranteed Array<Any>, @guaranteed String, @guaranteed String) -> ()
+
+// Array._endMutation()
+sil shared_external [_semantics "array.end_mutation"] @$sSa12_endMutationyyF : $@convention(method) <Element> (@inout Array<Element>) -> () {
+// %0                                             // users: %9, %1
+bb0(%0 : $*Array<Element>):
+  %1 = struct_element_addr %0 : $*Array<Element>, #Array._buffer // user: %2
+  %2 = struct_element_addr %1 : $*_ArrayBuffer<Element>, #_ArrayBuffer._storage // user: %3
+  %3 = struct_element_addr %2 : $*_BridgeStorage<__ContiguousArrayStorageBase>, #_BridgeStorage.rawValue // user: %4
+  %4 = load %3 : $*Builtin.BridgeObject           // user: %5
+  %5 = end_cow_mutation %4 : $Builtin.BridgeObject // user: %6
+  %6 = struct $_BridgeStorage<__ContiguousArrayStorageBase> (%5 : $Builtin.BridgeObject) // user: %7
+  %7 = struct $_ArrayBuffer<Element> (%6 : $_BridgeStorage<__ContiguousArrayStorageBase>) // user: %8
+  %8 = struct $Array<Element> (%7 : $_ArrayBuffer<Element>) // user: %9
+  store %8 to %0 : $*Array<Element>               // id: %9
+  %10 = tuple ()                                  // user: %11
+  return %10 : $()                                // id: %11
+} // end sil function '$sSa12_endMutationyyF'
+
+sil_vtable WYTeacher {
+  #WYTeacher.age!getter: (WYTeacher) -> () -> Int : @$s4main9WYTeacherC3ageSivg	// WYTeacher.age.getter
+  #WYTeacher.age!setter: (WYTeacher) -> (Int) -> () : @$s4main9WYTeacherC3ageSivs	// WYTeacher.age.setter
+  #WYTeacher.age!modify: (WYTeacher) -> () -> () : @$s4main9WYTeacherC3ageSivM	// WYTeacher.age.modify
+  #WYTeacher.name!getter: (WYTeacher) -> () -> String : @$s4main9WYTeacherC4nameSSvg	// WYTeacher.name.getter
+  #WYTeacher.name!setter: (WYTeacher) -> (String) -> () : @$s4main9WYTeacherC4nameSSvs	// WYTeacher.name.setter
+  #WYTeacher.name!modify: (WYTeacher) -> () -> () : @$s4main9WYTeacherC4nameSSvM	// WYTeacher.name.modify
+  #WYTeacher.init!allocator: (WYTeacher.Type) -> () -> WYTeacher : @$s4main9WYTeacherCACycfC	// WYTeacher.__allocating_init()
+  #WYTeacher.deinit!deallocator: @$s4main9WYTeacherCfD	// WYTeacher.__deallocating_deinit
+}
+
+
+
+// Mappings from '#fileID' to '#filePath':
+//   'main/main.swift' => 'main.swift'
+
+
