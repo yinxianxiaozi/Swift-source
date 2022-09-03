@@ -1,0 +1,414 @@
+sil_stage canonical
+
+import Builtin
+import Swift
+import SwiftShims
+
+import Foundation
+
+enum Shape {
+  case circle(radius: Double)
+  case rectangle(width: Int, height: Int)
+}
+
+@_hasStorage @_hasInitialValue let shape: Shape { get }
+
+// shape
+sil_global hidden [let] @main.shape : main.Shape : $Shape
+
+// main
+sil @main : $@convention(c) (Int32, UnsafeMutablePointer<Optional<UnsafeMutablePointer<Int8>>>) -> Int32 {
+bb0(%0 : $Int32, %1 : $UnsafeMutablePointer<Optional<UnsafeMutablePointer<Int8>>>):
+  %2 = integer_literal $Builtin.Word, 1           // user: %4
+  // function_ref _allocateUninitializedArray<A>(_:)
+  %3 = function_ref @Swift._allocateUninitializedArray<A>(Builtin.Word) -> ([A], Builtin.RawPointer) : $@convention(thin) <τ_0_0> (Builtin.Word) -> (@owned Array<τ_0_0>, Builtin.RawPointer) // user: %4
+  %4 = apply %3<Any>(%2) : $@convention(thin) <τ_0_0> (Builtin.Word) -> (@owned Array<τ_0_0>, Builtin.RawPointer) // users: %6, %5
+  %5 = tuple_extract %4 : $(Array<Any>, Builtin.RawPointer), 0 // user: %17
+  %6 = tuple_extract %4 : $(Array<Any>, Builtin.RawPointer), 1 // user: %7
+  %7 = pointer_to_address %6 : $Builtin.RawPointer to [strict] $*Any // user: %14
+  %8 = string_literal utf8 "Hello, World!"        // user: %13
+  %9 = integer_literal $Builtin.Word, 13          // user: %13
+  %10 = integer_literal $Builtin.Int1, -1         // user: %13
+  %11 = metatype $@thin String.Type               // user: %13
+  // function_ref String.init(_builtinStringLiteral:utf8CodeUnitCount:isASCII:)
+  %12 = function_ref @Swift.String.init(_builtinStringLiteral: Builtin.RawPointer, utf8CodeUnitCount: Builtin.Word, isASCII: Builtin.Int1) -> Swift.String : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %13
+  %13 = apply %12(%8, %9, %10, %11) : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %15
+  %14 = init_existential_addr %7 : $*Any, $String // user: %15
+  store %13 to %14 : $*String                     // id: %15
+  // function_ref _finalizeUninitializedArray<A>(_:)
+  %16 = function_ref @Swift._finalizeUninitializedArray<A>(__owned [A]) -> [A] : $@convention(thin) <τ_0_0> (@owned Array<τ_0_0>) -> @owned Array<τ_0_0> // user: %17
+  %17 = apply %16<Any>(%5) : $@convention(thin) <τ_0_0> (@owned Array<τ_0_0>) -> @owned Array<τ_0_0> // users: %26, %23
+  // function_ref default argument 1 of print(_:separator:terminator:)
+  %18 = function_ref @default argument 1 of Swift.print(_: Any..., separator: Swift.String, terminator: Swift.String) -> () : $@convention(thin) () -> @owned String // user: %19
+  %19 = apply %18() : $@convention(thin) () -> @owned String // users: %25, %23
+  // function_ref default argument 2 of print(_:separator:terminator:)
+  %20 = function_ref @default argument 2 of Swift.print(_: Any..., separator: Swift.String, terminator: Swift.String) -> () : $@convention(thin) () -> @owned String // user: %21
+  %21 = apply %20() : $@convention(thin) () -> @owned String // users: %24, %23
+  // function_ref print(_:separator:terminator:)
+  %22 = function_ref @Swift.print(_: Any..., separator: Swift.String, terminator: Swift.String) -> () : $@convention(thin) (@guaranteed Array<Any>, @guaranteed String, @guaranteed String) -> () // user: %23
+  %23 = apply %22(%17, %19, %21) : $@convention(thin) (@guaranteed Array<Any>, @guaranteed String, @guaranteed String) -> ()
+  release_value %21 : $String                     // id: %24
+  release_value %19 : $String                     // id: %25
+  release_value %17 : $Array<Any>                 // id: %26
+  alloc_global @main.shape : main.Shape          // id: %27
+  //全局变量
+  %28 = global_addr @main.shape : main.Shape : $*Shape // users: %35, %34
+  %29 = metatype $@thin Shape.Type
+  //float的直接数10
+  %30 = float_literal $Builtin.FPIEEE64, 0x4024000000000000 // 10 // user: %31
+  // 结构体
+  %31 = struct $Double (%30 : $Builtin.FPIEEE64)  // user: %32
+  //作为元组存储，因为我们知道，枚举内部其实是以元组的形式存储
+  %32 = tuple $(radius: Double) (%31)             // user: %33
+  //创建枚举
+  %33 = enum $Shape, #Shape.circle!enumelt, %32 : $(radius: Double) // user: %34
+  //赋给全局变量
+  store %33 to %28 : $*Shape                      // id: %34
+  %35 = load %28 : $*Shape                        // user: %36
+  // 进行匹配
+  switch_enum %35 : $Shape, case #Shape.circle!enumelt: bb1, case #Shape.rectangle!enumelt: bb2 // id: %36
+
+// %37                                            // user: %38
+bb1(%37 : $(radius: Double)):                     // Preds: bb0
+//取出radius中的值存储到%38
+  %38 = tuple_extract %37 : $(radius: Double), 0  // users: %67, %39
+  //并且会将%38赋值赋值给一个名叫radius的let。这也证明了为什么在内部可以使用radius
+  debug_value %38 : $Double, let, name "radius"   // id: %39
+  %40 = integer_literal $Builtin.Word, 1          // user: %42
+  // function_ref _allocateUninitializedArray<A>(_:)
+  %41 = function_ref @Swift._allocateUninitializedArray<A>(Builtin.Word) -> ([A], Builtin.RawPointer) : $@convention(thin) <τ_0_0> (Builtin.Word) -> (@owned Array<τ_0_0>, Builtin.RawPointer) // user: %42
+  %42 = apply %41<Any>(%40) : $@convention(thin) <τ_0_0> (Builtin.Word) -> (@owned Array<τ_0_0>, Builtin.RawPointer) // users: %44, %43
+  %43 = tuple_extract %42 : $(Array<Any>, Builtin.RawPointer), 0 // user: %94
+  %44 = tuple_extract %42 : $(Array<Any>, Builtin.RawPointer), 1 // user: %45
+  %45 = pointer_to_address %44 : $Builtin.RawPointer to [strict] $*Any // user: %91
+  %46 = alloc_stack $DefaultStringInterpolation, var, name "$interpolation", implicit // users: %84, %54, %87, %86, %61, %68, %79
+  %47 = integer_literal $Builtin.Int64, 15        // user: %48
+  %48 = struct $Int (%47 : $Builtin.Int64)        // user: %53
+  %49 = integer_literal $Builtin.Int64, 1         // user: %50
+  %50 = struct $Int (%49 : $Builtin.Int64)        // user: %53
+  %51 = metatype $@thin DefaultStringInterpolation.Type // user: %53
+  // function_ref DefaultStringInterpolation.init(literalCapacity:interpolationCount:)
+  %52 = function_ref @Swift.DefaultStringInterpolation.init(literalCapacity: Swift.Int, interpolationCount: Swift.Int) -> Swift.DefaultStringInterpolation : $@convention(method) (Int, Int, @thin DefaultStringInterpolation.Type) -> @owned DefaultStringInterpolation // user: %53
+  %53 = apply %52(%48, %50, %51) : $@convention(method) (Int, Int, @thin DefaultStringInterpolation.Type) -> @owned DefaultStringInterpolation // user: %54
+  store %53 to %46 : $*DefaultStringInterpolation // id: %54
+  %55 = string_literal utf8 "circle radius: "     // user: %60
+  %56 = integer_literal $Builtin.Word, 15         // user: %60
+  %57 = integer_literal $Builtin.Int1, -1         // user: %60
+  %58 = metatype $@thin String.Type               // user: %60
+  // function_ref String.init(_builtinStringLiteral:utf8CodeUnitCount:isASCII:)
+  %59 = function_ref @Swift.String.init(_builtinStringLiteral: Builtin.RawPointer, utf8CodeUnitCount: Builtin.Word, isASCII: Builtin.Int1) -> Swift.String : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %60
+  %60 = apply %59(%55, %56, %57, %58) : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // users: %65, %63
+  %61 = begin_access [modify] [static] %46 : $*DefaultStringInterpolation // users: %64, %63
+  // function_ref DefaultStringInterpolation.appendLiteral(_:)
+  %62 = function_ref @Swift.DefaultStringInterpolation.appendLiteral(Swift.String) -> () : $@convention(method) (@guaranteed String, @inout DefaultStringInterpolation) -> () // user: %63
+  %63 = apply %62(%60, %61) : $@convention(method) (@guaranteed String, @inout DefaultStringInterpolation) -> ()
+  end_access %61 : $*DefaultStringInterpolation   // id: %64
+  release_value %60 : $String                     // id: %65
+  %66 = alloc_stack $Double                       // users: %67, %72, %70
+  store %38 to %66 : $*Double                     // id: %67
+  %68 = begin_access [modify] [static] %46 : $*DefaultStringInterpolation // users: %71, %70
+  // function_ref DefaultStringInterpolation.appendInterpolation<A>(_:)
+  %69 = function_ref @Swift.DefaultStringInterpolation.appendInterpolation<A where A: Swift.CustomStringConvertible, A: Swift.TextOutputStreamable>(A) -> () : $@convention(method) <τ_0_0 where τ_0_0 : CustomStringConvertible, τ_0_0 : TextOutputStreamable> (@in_guaranteed τ_0_0, @inout DefaultStringInterpolation) -> () // user: %70
+  %70 = apply %69<Double>(%66, %68) : $@convention(method) <τ_0_0 where τ_0_0 : CustomStringConvertible, τ_0_0 : TextOutputStreamable> (@in_guaranteed τ_0_0, @inout DefaultStringInterpolation) -> ()
+  end_access %68 : $*DefaultStringInterpolation   // id: %71
+  dealloc_stack %66 : $*Double                    // id: %72
+  %73 = string_literal utf8 ""                    // user: %78
+  %74 = integer_literal $Builtin.Word, 0          // user: %78
+  %75 = integer_literal $Builtin.Int1, -1         // user: %78
+  %76 = metatype $@thin String.Type               // user: %78
+  // function_ref String.init(_builtinStringLiteral:utf8CodeUnitCount:isASCII:)
+  %77 = function_ref @Swift.String.init(_builtinStringLiteral: Builtin.RawPointer, utf8CodeUnitCount: Builtin.Word, isASCII: Builtin.Int1) -> Swift.String : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %78
+  %78 = apply %77(%73, %74, %75, %76) : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // users: %83, %81
+  %79 = begin_access [modify] [static] %46 : $*DefaultStringInterpolation // users: %82, %81
+  // function_ref DefaultStringInterpolation.appendLiteral(_:)
+  %80 = function_ref @Swift.DefaultStringInterpolation.appendLiteral(Swift.String) -> () : $@convention(method) (@guaranteed String, @inout DefaultStringInterpolation) -> () // user: %81
+  %81 = apply %80(%78, %79) : $@convention(method) (@guaranteed String, @inout DefaultStringInterpolation) -> ()
+  end_access %79 : $*DefaultStringInterpolation   // id: %82
+  release_value %78 : $String                     // id: %83
+  %84 = load %46 : $*DefaultStringInterpolation   // users: %90, %85
+  retain_value %84 : $DefaultStringInterpolation  // id: %85
+  destroy_addr %46 : $*DefaultStringInterpolation // id: %86
+  dealloc_stack %46 : $*DefaultStringInterpolation // id: %87
+  %88 = metatype $@thin String.Type               // user: %90
+  // function_ref String.init(stringInterpolation:)
+  %89 = function_ref @Swift.String.init(stringInterpolation: Swift.DefaultStringInterpolation) -> Swift.String : $@convention(method) (@owned DefaultStringInterpolation, @thin String.Type) -> @owned String // user: %90
+  %90 = apply %89(%84, %88) : $@convention(method) (@owned DefaultStringInterpolation, @thin String.Type) -> @owned String // user: %92
+  %91 = init_existential_addr %45 : $*Any, $String // user: %92
+  store %90 to %91 : $*String                     // id: %92
+  // function_ref _finalizeUninitializedArray<A>(_:)
+  %93 = function_ref @Swift._finalizeUninitializedArray<A>(__owned [A]) -> [A] : $@convention(thin) <τ_0_0> (@owned Array<τ_0_0>) -> @owned Array<τ_0_0> // user: %94
+  %94 = apply %93<Any>(%43) : $@convention(thin) <τ_0_0> (@owned Array<τ_0_0>) -> @owned Array<τ_0_0> // users: %103, %100
+  // function_ref default argument 1 of print(_:separator:terminator:)
+  %95 = function_ref @default argument 1 of Swift.print(_: Any..., separator: Swift.String, terminator: Swift.String) -> () : $@convention(thin) () -> @owned String // user: %96
+  %96 = apply %95() : $@convention(thin) () -> @owned String // users: %102, %100
+  // function_ref default argument 2 of print(_:separator:terminator:)
+  %97 = function_ref @default argument 2 of Swift.print(_: Any..., separator: Swift.String, terminator: Swift.String) -> () : $@convention(thin) () -> @owned String // user: %98
+  %98 = apply %97() : $@convention(thin) () -> @owned String // users: %101, %100
+  // function_ref print(_:separator:terminator:)
+  %99 = function_ref @Swift.print(_: Any..., separator: Swift.String, terminator: Swift.String) -> () : $@convention(thin) (@guaranteed Array<Any>, @guaranteed String, @guaranteed String) -> () // user: %100
+  %100 = apply %99(%94, %96, %98) : $@convention(thin) (@guaranteed Array<Any>, @guaranteed String, @guaranteed String) -> ()
+  release_value %98 : $String                     // id: %101
+  release_value %96 : $String                     // id: %102
+  release_value %94 : $Array<Any>                 // id: %103
+  br bb3                                          // id: %104
+
+// %105                                           // users: %107, %106
+bb2(%105 : $(width: Int, height: Int)):           // Preds: bb0
+  %106 = tuple_extract %105 : $(width: Int, height: Int), 0 // users: %151, %111
+  %107 = tuple_extract %105 : $(width: Int, height: Int), 1 // users: %110, %109
+  %108 = alloc_stack $Int, var, name "height"     // users: %110, %206, %112, %114
+  %109 = struct_extract %107 : $Int, #Int._value  // user: %116
+  store %107 to %108 : $*Int                      // id: %110
+  debug_value %106 : $Int, let, name "width"      // id: %111
+  debug_value %108 : $*Int, var, name "height", expr op_deref // id: %112
+  %113 = integer_literal $Builtin.Int64, 1        // user: %116
+  %114 = begin_access [modify] [static] %108 : $*Int // users: %121, %123
+  %115 = integer_literal $Builtin.Int1, -1        // user: %116
+  %116 = builtin "sadd_with_overflow_Int64"(%109 : $Builtin.Int64, %113 : $Builtin.Int64, %115 : $Builtin.Int1) : $(Builtin.Int64, Builtin.Int1) // users: %118, %117
+  %117 = tuple_extract %116 : $(Builtin.Int64, Builtin.Int1), 0 // user: %120
+  %118 = tuple_extract %116 : $(Builtin.Int64, Builtin.Int1), 1 // user: %119
+  cond_fail %118 : $Builtin.Int1, "arithmetic overflow" // id: %119
+  %120 = struct $Int (%117 : $Builtin.Int64)      // users: %169, %121
+  store %120 to %114 : $*Int                      // id: %121
+  %122 = tuple ()
+  end_access %114 : $*Int                         // id: %123
+  %124 = integer_literal $Builtin.Word, 1         // user: %126
+  // function_ref _allocateUninitializedArray<A>(_:)
+  %125 = function_ref @Swift._allocateUninitializedArray<A>(Builtin.Word) -> ([A], Builtin.RawPointer) : $@convention(thin) <τ_0_0> (Builtin.Word) -> (@owned Array<τ_0_0>, Builtin.RawPointer) // user: %126
+  %126 = apply %125<Any>(%124) : $@convention(thin) <τ_0_0> (Builtin.Word) -> (@owned Array<τ_0_0>, Builtin.RawPointer) // users: %128, %127
+  %127 = tuple_extract %126 : $(Array<Any>, Builtin.RawPointer), 0 // user: %196
+  %128 = tuple_extract %126 : $(Array<Any>, Builtin.RawPointer), 1 // user: %129
+  %129 = pointer_to_address %128 : $Builtin.RawPointer to [strict] $*Any // user: %193
+  %130 = alloc_stack $DefaultStringInterpolation, var, name "$interpolation", implicit // users: %186, %138, %189, %188, %145, %152, %163, %170, %181
+  %131 = integer_literal $Builtin.Int64, 26       // user: %132
+  %132 = struct $Int (%131 : $Builtin.Int64)      // user: %137
+  %133 = integer_literal $Builtin.Int64, 2        // user: %134
+  %134 = struct $Int (%133 : $Builtin.Int64)      // user: %137
+  %135 = metatype $@thin DefaultStringInterpolation.Type // user: %137
+  // function_ref DefaultStringInterpolation.init(literalCapacity:interpolationCount:)
+  %136 = function_ref @Swift.DefaultStringInterpolation.init(literalCapacity: Swift.Int, interpolationCount: Swift.Int) -> Swift.DefaultStringInterpolation : $@convention(method) (Int, Int, @thin DefaultStringInterpolation.Type) -> @owned DefaultStringInterpolation // user: %137
+  %137 = apply %136(%132, %134, %135) : $@convention(method) (Int, Int, @thin DefaultStringInterpolation.Type) -> @owned DefaultStringInterpolation // user: %138
+  store %137 to %130 : $*DefaultStringInterpolation // id: %138
+  %139 = string_literal utf8 "rectangle width: "  // user: %144
+  %140 = integer_literal $Builtin.Word, 17        // user: %144
+  %141 = integer_literal $Builtin.Int1, -1        // user: %144
+  %142 = metatype $@thin String.Type              // user: %144
+  // function_ref String.init(_builtinStringLiteral:utf8CodeUnitCount:isASCII:)
+  %143 = function_ref @Swift.String.init(_builtinStringLiteral: Builtin.RawPointer, utf8CodeUnitCount: Builtin.Word, isASCII: Builtin.Int1) -> Swift.String : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %144
+  %144 = apply %143(%139, %140, %141, %142) : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // users: %149, %147
+  %145 = begin_access [modify] [static] %130 : $*DefaultStringInterpolation // users: %148, %147
+  // function_ref DefaultStringInterpolation.appendLiteral(_:)
+  %146 = function_ref @Swift.DefaultStringInterpolation.appendLiteral(Swift.String) -> () : $@convention(method) (@guaranteed String, @inout DefaultStringInterpolation) -> () // user: %147
+  %147 = apply %146(%144, %145) : $@convention(method) (@guaranteed String, @inout DefaultStringInterpolation) -> ()
+  end_access %145 : $*DefaultStringInterpolation  // id: %148
+  release_value %144 : $String                    // id: %149
+  %150 = alloc_stack $Int                         // users: %151, %156, %154
+  store %106 to %150 : $*Int                      // id: %151
+  %152 = begin_access [modify] [static] %130 : $*DefaultStringInterpolation // users: %155, %154
+  // function_ref DefaultStringInterpolation.appendInterpolation<A>(_:)
+  %153 = function_ref @Swift.DefaultStringInterpolation.appendInterpolation<A where A: Swift.CustomStringConvertible>(A) -> () : $@convention(method) <τ_0_0 where τ_0_0 : CustomStringConvertible> (@in_guaranteed τ_0_0, @inout DefaultStringInterpolation) -> () // user: %154
+  %154 = apply %153<Int>(%150, %152) : $@convention(method) <τ_0_0 where τ_0_0 : CustomStringConvertible> (@in_guaranteed τ_0_0, @inout DefaultStringInterpolation) -> ()
+  end_access %152 : $*DefaultStringInterpolation  // id: %155
+  dealloc_stack %150 : $*Int                      // id: %156
+  %157 = string_literal utf8 " height: "          // user: %162
+  %158 = integer_literal $Builtin.Word, 9         // user: %162
+  %159 = integer_literal $Builtin.Int1, -1        // user: %162
+  %160 = metatype $@thin String.Type              // user: %162
+  // function_ref String.init(_builtinStringLiteral:utf8CodeUnitCount:isASCII:)
+  %161 = function_ref @Swift.String.init(_builtinStringLiteral: Builtin.RawPointer, utf8CodeUnitCount: Builtin.Word, isASCII: Builtin.Int1) -> Swift.String : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %162
+  %162 = apply %161(%157, %158, %159, %160) : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // users: %167, %165
+  %163 = begin_access [modify] [static] %130 : $*DefaultStringInterpolation // users: %166, %165
+  // function_ref DefaultStringInterpolation.appendLiteral(_:)
+  %164 = function_ref @Swift.DefaultStringInterpolation.appendLiteral(Swift.String) -> () : $@convention(method) (@guaranteed String, @inout DefaultStringInterpolation) -> () // user: %165
+  %165 = apply %164(%162, %163) : $@convention(method) (@guaranteed String, @inout DefaultStringInterpolation) -> ()
+  end_access %163 : $*DefaultStringInterpolation  // id: %166
+  release_value %162 : $String                    // id: %167
+  %168 = alloc_stack $Int                         // users: %169, %174, %172
+  store %120 to %168 : $*Int                      // id: %169
+  %170 = begin_access [modify] [static] %130 : $*DefaultStringInterpolation // users: %173, %172
+  // function_ref DefaultStringInterpolation.appendInterpolation<A>(_:)
+  %171 = function_ref @Swift.DefaultStringInterpolation.appendInterpolation<A where A: Swift.CustomStringConvertible>(A) -> () : $@convention(method) <τ_0_0 where τ_0_0 : CustomStringConvertible> (@in_guaranteed τ_0_0, @inout DefaultStringInterpolation) -> () // user: %172
+  %172 = apply %171<Int>(%168, %170) : $@convention(method) <τ_0_0 where τ_0_0 : CustomStringConvertible> (@in_guaranteed τ_0_0, @inout DefaultStringInterpolation) -> ()
+  end_access %170 : $*DefaultStringInterpolation  // id: %173
+  dealloc_stack %168 : $*Int                      // id: %174
+  %175 = string_literal utf8 ""                   // user: %180
+  %176 = integer_literal $Builtin.Word, 0         // user: %180
+  %177 = integer_literal $Builtin.Int1, -1        // user: %180
+  %178 = metatype $@thin String.Type              // user: %180
+  // function_ref String.init(_builtinStringLiteral:utf8CodeUnitCount:isASCII:)
+  %179 = function_ref @Swift.String.init(_builtinStringLiteral: Builtin.RawPointer, utf8CodeUnitCount: Builtin.Word, isASCII: Builtin.Int1) -> Swift.String : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %180
+  %180 = apply %179(%175, %176, %177, %178) : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // users: %185, %183
+  %181 = begin_access [modify] [static] %130 : $*DefaultStringInterpolation // users: %184, %183
+  // function_ref DefaultStringInterpolation.appendLiteral(_:)
+  %182 = function_ref @Swift.DefaultStringInterpolation.appendLiteral(Swift.String) -> () : $@convention(method) (@guaranteed String, @inout DefaultStringInterpolation) -> () // user: %183
+  %183 = apply %182(%180, %181) : $@convention(method) (@guaranteed String, @inout DefaultStringInterpolation) -> ()
+  end_access %181 : $*DefaultStringInterpolation  // id: %184
+  release_value %180 : $String                    // id: %185
+  %186 = load %130 : $*DefaultStringInterpolation // users: %192, %187
+  retain_value %186 : $DefaultStringInterpolation // id: %187
+  destroy_addr %130 : $*DefaultStringInterpolation // id: %188
+  dealloc_stack %130 : $*DefaultStringInterpolation // id: %189
+  %190 = metatype $@thin String.Type              // user: %192
+  // function_ref String.init(stringInterpolation:)
+  %191 = function_ref @Swift.String.init(stringInterpolation: Swift.DefaultStringInterpolation) -> Swift.String : $@convention(method) (@owned DefaultStringInterpolation, @thin String.Type) -> @owned String // user: %192
+  %192 = apply %191(%186, %190) : $@convention(method) (@owned DefaultStringInterpolation, @thin String.Type) -> @owned String // user: %194
+  %193 = init_existential_addr %129 : $*Any, $String // user: %194
+  store %192 to %193 : $*String                   // id: %194
+  // function_ref _finalizeUninitializedArray<A>(_:)
+  %195 = function_ref @Swift._finalizeUninitializedArray<A>(__owned [A]) -> [A] : $@convention(thin) <τ_0_0> (@owned Array<τ_0_0>) -> @owned Array<τ_0_0> // user: %196
+  %196 = apply %195<Any>(%127) : $@convention(thin) <τ_0_0> (@owned Array<τ_0_0>) -> @owned Array<τ_0_0> // users: %205, %202
+  // function_ref default argument 1 of print(_:separator:terminator:)
+  %197 = function_ref @default argument 1 of Swift.print(_: Any..., separator: Swift.String, terminator: Swift.String) -> () : $@convention(thin) () -> @owned String // user: %198
+  %198 = apply %197() : $@convention(thin) () -> @owned String // users: %204, %202
+  // function_ref default argument 2 of print(_:separator:terminator:)
+  %199 = function_ref @default argument 2 of Swift.print(_: Any..., separator: Swift.String, terminator: Swift.String) -> () : $@convention(thin) () -> @owned String // user: %200
+  %200 = apply %199() : $@convention(thin) () -> @owned String // users: %203, %202
+  // function_ref print(_:separator:terminator:)
+  %201 = function_ref @Swift.print(_: Any..., separator: Swift.String, terminator: Swift.String) -> () : $@convention(thin) (@guaranteed Array<Any>, @guaranteed String, @guaranteed String) -> () // user: %202
+  %202 = apply %201(%196, %198, %200) : $@convention(thin) (@guaranteed Array<Any>, @guaranteed String, @guaranteed String) -> ()
+  release_value %200 : $String                    // id: %203
+  release_value %198 : $String                    // id: %204
+  release_value %196 : $Array<Any>                // id: %205
+  dealloc_stack %108 : $*Int                      // id: %206
+  br bb3                                          // id: %207
+
+bb3:                                              // Preds: bb2 bb1
+  %208 = integer_literal $Builtin.Int32, 0        // user: %209
+  %209 = struct $Int32 (%208 : $Builtin.Int32)    // user: %210
+  return %209 : $Int32                            // id: %210
+} // end sil function 'main'
+
+// _allocateUninitializedArray<A>(_:)
+sil [always_inline] [_semantics "array.uninitialized_intrinsic"] @Swift._allocateUninitializedArray<A>(Builtin.Word) -> ([A], Builtin.RawPointer) : $@convention(thin) <τ_0_0> (Builtin.Word) -> (@owned Array<τ_0_0>, Builtin.RawPointer)
+
+// String.init(_builtinStringLiteral:utf8CodeUnitCount:isASCII:)
+sil [always_inline] [readonly] [_semantics "string.makeUTF8"] @Swift.String.init(_builtinStringLiteral: Builtin.RawPointer, utf8CodeUnitCount: Builtin.Word, isASCII: Builtin.Int1) -> Swift.String : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String
+
+// _finalizeUninitializedArray<A>(_:)
+sil shared_external [readnone] [_semantics "array.finalize_intrinsic"] @Swift._finalizeUninitializedArray<A>(__owned [A]) -> [A] : $@convention(thin) <Element> (@owned Array<Element>) -> @owned Array<Element> {
+// %0                                             // user: %2
+bb0(%0 : $Array<Element>):
+  %1 = alloc_stack $Array<Element>                // users: %15, %6, %5, %4, %2
+  store %0 to %1 : $*Array<Element>               // id: %2
+  // function_ref Array._endMutation()
+  %3 = function_ref @Swift.Array._endMutation() -> () : $@convention(method) <τ_0_0> (@inout Array<τ_0_0>) -> () // user: %4
+  %4 = apply %3<Element>(%1) : $@convention(method) <τ_0_0> (@inout Array<τ_0_0>) -> ()
+  %5 = load %1 : $*Array<Element>                 // users: %16, %10
+  %6 = struct_element_addr %1 : $*Array<Element>, #Array._buffer // user: %7
+  %7 = struct_element_addr %6 : $*_ArrayBuffer<Element>, #_ArrayBuffer._storage // user: %8
+  %8 = struct_element_addr %7 : $*_BridgeStorage<__ContiguousArrayStorageBase>, #_BridgeStorage.rawValue // user: %9
+  %9 = load %8 : $*Builtin.BridgeObject           // user: %14
+  %10 = struct_extract %5 : $Array<Element>, #Array._buffer // user: %11
+  %11 = struct_extract %10 : $_ArrayBuffer<Element>, #_ArrayBuffer._storage // user: %12
+  %12 = struct_extract %11 : $_BridgeStorage<__ContiguousArrayStorageBase>, #_BridgeStorage.rawValue // user: %13
+  strong_retain %12 : $Builtin.BridgeObject       // id: %13
+  strong_release %9 : $Builtin.BridgeObject       // id: %14
+  dealloc_stack %1 : $*Array<Element>             // id: %15
+  return %5 : $Array<Element>                     // id: %16
+} // end sil function 'Swift._finalizeUninitializedArray<A>(__owned [A]) -> [A]'
+
+// default argument 1 of print(_:separator:terminator:)
+sil shared_external @default argument 1 of Swift.print(_: Any..., separator: Swift.String, terminator: Swift.String) -> () : $@convention(thin) () -> @owned String {
+bb0:
+  %0 = string_literal utf8 " "                    // user: %5
+  %1 = integer_literal $Builtin.Word, 1           // user: %5
+  %2 = integer_literal $Builtin.Int1, -1          // user: %5
+  %3 = metatype $@thin String.Type                // user: %5
+  // function_ref String.init(_builtinStringLiteral:utf8CodeUnitCount:isASCII:)
+  %4 = function_ref @Swift.String.init(_builtinStringLiteral: Builtin.RawPointer, utf8CodeUnitCount: Builtin.Word, isASCII: Builtin.Int1) -> Swift.String : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %5
+  %5 = apply %4(%0, %1, %2, %3) : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %6
+  return %5 : $String                             // id: %6
+} // end sil function 'default argument 1 of Swift.print(_: Any..., separator: Swift.String, terminator: Swift.String) -> ()'
+
+// default argument 2 of print(_:separator:terminator:)
+sil shared_external @default argument 2 of Swift.print(_: Any..., separator: Swift.String, terminator: Swift.String) -> () : $@convention(thin) () -> @owned String {
+bb0:
+  %0 = string_literal utf8 "\n"                   // user: %5
+  %1 = integer_literal $Builtin.Word, 1           // user: %5
+  %2 = integer_literal $Builtin.Int1, -1          // user: %5
+  %3 = metatype $@thin String.Type                // user: %5
+  // function_ref String.init(_builtinStringLiteral:utf8CodeUnitCount:isASCII:)
+  %4 = function_ref @Swift.String.init(_builtinStringLiteral: Builtin.RawPointer, utf8CodeUnitCount: Builtin.Word, isASCII: Builtin.Int1) -> Swift.String : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %5
+  %5 = apply %4(%0, %1, %2, %3) : $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type) -> @owned String // user: %6
+  return %5 : $String                             // id: %6
+} // end sil function 'default argument 2 of Swift.print(_: Any..., separator: Swift.String, terminator: Swift.String) -> ()'
+
+// print(_:separator:terminator:)
+sil @Swift.print(_: Any..., separator: Swift.String, terminator: Swift.String) -> () : $@convention(thin) (@guaranteed Array<Any>, @guaranteed String, @guaranteed String) -> ()
+
+// Double.init(_builtinIntegerLiteral:)
+sil public_external [transparent] @Swift.Double.init(_builtinIntegerLiteral: Builtin.IntLiteral) -> Swift.Double : $@convention(method) (Builtin.IntLiteral, @thin Double.Type) -> Double {
+// %0                                             // user: %2
+bb0(%0 : $Builtin.IntLiteral, %1 : $@thin Double.Type):
+  %2 = builtin "itofp_with_overflow_IntLiteral_FPIEEE64"(%0 : $Builtin.IntLiteral) : $Builtin.FPIEEE64 // user: %3
+  %3 = struct $Double (%2 : $Builtin.FPIEEE64)    // user: %4
+  return %3 : $Double                             // id: %4
+} // end sil function 'Swift.Double.init(_builtinIntegerLiteral: Builtin.IntLiteral) -> Swift.Double'
+
+// Int.init(_builtinIntegerLiteral:)
+sil public_external [transparent] @Swift.Int.init(_builtinIntegerLiteral: Builtin.IntLiteral) -> Swift.Int : $@convention(method) (Builtin.IntLiteral, @thin Int.Type) -> Int {
+// %0                                             // user: %2
+bb0(%0 : $Builtin.IntLiteral, %1 : $@thin Int.Type):
+  %2 = builtin "s_to_s_checked_trunc_IntLiteral_Int64"(%0 : $Builtin.IntLiteral) : $(Builtin.Int64, Builtin.Int1) // user: %3
+  %3 = tuple_extract %2 : $(Builtin.Int64, Builtin.Int1), 0 // user: %4
+  %4 = struct $Int (%3 : $Builtin.Int64)          // user: %5
+  return %4 : $Int                                // id: %5
+} // end sil function 'Swift.Int.init(_builtinIntegerLiteral: Builtin.IntLiteral) -> Swift.Int'
+
+// DefaultStringInterpolation.init(literalCapacity:interpolationCount:)
+sil @Swift.DefaultStringInterpolation.init(literalCapacity: Swift.Int, interpolationCount: Swift.Int) -> Swift.DefaultStringInterpolation : $@convention(method) (Int, Int, @thin DefaultStringInterpolation.Type) -> @owned DefaultStringInterpolation
+
+// DefaultStringInterpolation.appendLiteral(_:)
+sil @Swift.DefaultStringInterpolation.appendLiteral(Swift.String) -> () : $@convention(method) (@guaranteed String, @inout DefaultStringInterpolation) -> ()
+
+// DefaultStringInterpolation.appendInterpolation<A>(_:)
+sil @Swift.DefaultStringInterpolation.appendInterpolation<A where A: Swift.CustomStringConvertible, A: Swift.TextOutputStreamable>(A) -> () : $@convention(method) <τ_0_0 where τ_0_0 : CustomStringConvertible, τ_0_0 : TextOutputStreamable> (@in_guaranteed τ_0_0, @inout DefaultStringInterpolation) -> ()
+
+// String.init(stringInterpolation:)
+sil [readonly] @Swift.String.init(stringInterpolation: Swift.DefaultStringInterpolation) -> Swift.String : $@convention(method) (@owned DefaultStringInterpolation, @thin String.Type) -> @owned String
+
+// static Int.+= infix(_:_:)
+sil public_external [transparent] @static Swift.Int.+= infix(inout Swift.Int, Swift.Int) -> () : $@convention(method) (@inout Int, Int, @thin Int.Type) -> () {
+// %0                                             // users: %12, %3
+// %1                                             // user: %5
+bb0(%0 : $*Int, %1 : $Int, %2 : $@thin Int.Type):
+  %3 = struct_element_addr %0 : $*Int, #Int._value // user: %4
+  %4 = load %3 : $*Builtin.Int64                  // user: %7
+  %5 = struct_extract %1 : $Int, #Int._value      // user: %7
+  %6 = integer_literal $Builtin.Int1, -1          // user: %7
+  %7 = builtin "sadd_with_overflow_Int64"(%4 : $Builtin.Int64, %5 : $Builtin.Int64, %6 : $Builtin.Int1) : $(Builtin.Int64, Builtin.Int1) // users: %9, %8
+  %8 = tuple_extract %7 : $(Builtin.Int64, Builtin.Int1), 0 // user: %11
+  %9 = tuple_extract %7 : $(Builtin.Int64, Builtin.Int1), 1 // user: %10
+  cond_fail %9 : $Builtin.Int1, "arithmetic overflow" // id: %10
+  %11 = struct $Int (%8 : $Builtin.Int64)         // user: %12
+  store %11 to %0 : $*Int                         // id: %12
+  %13 = tuple ()                                  // user: %14
+  return %13 : $()                                // id: %14
+} // end sil function 'static Swift.Int.+= infix(inout Swift.Int, Swift.Int) -> ()'
+
+// DefaultStringInterpolation.appendInterpolation<A>(_:)
+sil @Swift.DefaultStringInterpolation.appendInterpolation<A where A: Swift.CustomStringConvertible>(A) -> () : $@convention(method) <τ_0_0 where τ_0_0 : CustomStringConvertible> (@in_guaranteed τ_0_0, @inout DefaultStringInterpolation) -> ()
+
+// Array._endMutation()
+sil shared_external [_semantics "array.end_mutation"] @Swift.Array._endMutation() -> () : $@convention(method) <Element> (@inout Array<Element>) -> () {
+// %0                                             // users: %9, %1
+bb0(%0 : $*Array<Element>):
+  %1 = struct_element_addr %0 : $*Array<Element>, #Array._buffer // user: %2
+  %2 = struct_element_addr %1 : $*_ArrayBuffer<Element>, #_ArrayBuffer._storage // user: %3
+  %3 = struct_element_addr %2 : $*_BridgeStorage<__ContiguousArrayStorageBase>, #_BridgeStorage.rawValue // user: %4
+  %4 = load %3 : $*Builtin.BridgeObject           // user: %5
+  %5 = end_cow_mutation %4 : $Builtin.BridgeObject // user: %6
+  %6 = struct $_BridgeStorage<__ContiguousArrayStorageBase> (%5 : $Builtin.BridgeObject) // user: %7
+  %7 = struct $_ArrayBuffer<Element> (%6 : $_BridgeStorage<__ContiguousArrayStorageBase>) // user: %8
+  %8 = struct $Array<Element> (%7 : $_ArrayBuffer<Element>) // user: %9
+  store %8 to %0 : $*Array<Element>               // id: %9
+  %10 = tuple ()                                  // user: %11
+  return %10 : $()                                // id: %11
+} // end sil function 'Swift.Array._endMutation() -> ()'
+
+
+
+// Mappings from '#fileID' to '#filePath':
+//   'main/main.swift' => 'main.swift'
+
+
